@@ -20,7 +20,7 @@ will return:
 
 	.tblrow
 	.	tblcol 1
-	.	bnlcol alpha
+	.	tblcol alpha
 	.tblrow
 	.	tblcol 2
 	.	tblcol beta
