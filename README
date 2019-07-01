@@ -20,13 +20,19 @@ will return:
 
 	.tblrow
 	.	tblcol 1
-	.	tblcol alpha
-	.tblrow
+	1
 	.	tblcol 2
-	.	tblcol beta
+	alpha
 	.tblrow
-	.	tblcol 3
-	.	tblcol gamma
+	.	tblcol 1
+	2
+	.	tblcol 2
+	beta
+	.tblrow
+	.	tblcol 1
+	3
+	.	tblcol 2
+	gamma
 
 Build
 -----
