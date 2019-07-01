@@ -1,0 +1,65 @@
+.sp 5v
+.de PP
+.sp 1v
+.po 4c
+.ll 15c
+.ps 12p
+.vs 18p
+.fi
+.ad b
+..
+.PP
+.ad c
+.ps 15p
+tsql
+.br
+.ps 12p
+sqlite preprocessor for troff
+.sp 2v
+.PP
+The database is defined by .sqlfile.
+We can use an in memory database using the keyword :memory:.
+.sqlfile :memory:
+Queries are enclosed between .sqlbeg and .sqlend.
+We begin by creating a table and add values to it.
+.sqlbeg
+create table T (id integer primary key, name text);
+insert into T (name) values ('Pierre'), ('Paul'), ('Jacques');
+.sqlend
+.
+\&.sqlbeg will format the result for the neatroff macro tbl.tmac.
+.PP
+.tblbeg 3c 0
+.tblbox 0 1 0
+.sqlbeg
+select * from T;
+.sqlend
+.tblend
+.
+.PP
+\&.sqltbl will format the result for the pre-processor tbl.
+.PP
+.TS
+allbox expand;
+c c .
+.sqltbl
+select * from T;
+.sqlend
+.TE
+.
+.PP
+\&.sqlds can be used to define a string,
+.sqlds name
+select name from T where id = 2;
+.sqlend
+.
+and .sqlnr can be used to define a number register:
+.sqlnr id
+select id from T where name = 'Paul';
+.sqlend
+The id of \*[name] is \n[id].
+Power and sqrt functions are defined:
+.sqlnr i
+select sqrt(power(2, 2));
+.sqlend
+sqrt(power(2, 2)) is \ni.

@@ -1,0 +1,145 @@
+.\"
+.ig
+Copyright (C) 2019 Pierre Jean Fichet
+<pierrejean dot fichet at posteo dot net>
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+..
+.\" DA Pierre-Jean Fichet
+.\" DS Utroff tsql manual
+.\" DT Utroff tsql manual
+.\" DK utroff tsql troff nroff sqlite
+.
+.
+.
+.TH TSQL 1 2019-07-01
+.
+.
+.
+.SH NAME
+.PP
+\fBTsql\fR − Executes sqlite statements from a troff document.
+.
+.
+.
+.SH SYNOPSIS
+.PP
+\fB@BINDIR@/tsql\fR
+[\fB−c\fR <\fIcontrol_character\fR>]
+< \fIfile\fR | tbl | troff | pdf > file.pdf
+.
+.
+.
+.SH DESCRIPTION
+.PP
+\fITsql\fR executes the sqlite statements found in the input file
+and format their result for troff.
+.
+.
+.
+.SH OPTIONS
+.TP
+\&\fB−c\fR \fIcontrol_character\fR
+Define the control character. Default is '\fI.\fR'.
+.
+.
+.
+.SH MACROS
+.PP
+In the troff document, macros are used to configure \fBtsql\fR and
+wrap the sqlite statements.
+.TP
+\&\fBsqlfile\fR <\fIfile\fR>
+Opens the database \fIfile\fR and executes statements against it.
+If \fIfile\fR does not exist, it will be created.
+Several \fBsqlfile\fR can be indicated: \fBtsql\fR will then close the
+current database and open the new one instead. The keyword
+\fI:memory:\fR can be used to define an in memory database.
+.TP
+\&\fBsqlbeg\fR
+Sqlite statements begin on the next line, until \fBsqlend\fR.
+\fBsqlbeg\fR Formats the result of the query using \fBtblrow\fR and
+\fBtblcol\fR that neatroff macro \fItbl.tmac\fR understands.
+.TP
+\&\fBsqltbl\fR [<\fItab\fR>]
+Sqlite statements begins on the next line, until \fBsqlend\fR.
+\fBsqltbl\fR formats the result of the query for the pre-processor
+\fBtbl\fR.
+The optional <\fItab\fR> arguments defines the character used
+as separator (it should conform with the tab(x) global option
+of \fBtbl\fR).
+.TP
+\&\fBsqlds\fR <\fIstring_name\fR>
+An sqlite query begins on the next line, until \fBsqlend\fR.
+\fBsqlds\fR will format the result as a troff string definition:
+.PP
+.EX
+\fB.\fR\fBds\fR \fBstring_name\fR \fIquery result\fR
+.EE
+.TP
+\&\fBsqlnr\fR <\fIregister_name\fR>
+An sqlite query begins on the next line, until \fBsqlend\fR.
+\fBsqlnr\fR will format the result as a troff number register
+definition.
+.PP
+.EX
+\fB.\fR\fBnr\fR \fBregister_name\fR \fIquery_result\fR
+.EE
+.
+.
+.
+.SH EXTENSIONS
+.PP
+The following functions are added to the sqlite language:
+.TP
+\&\fBsqrt(\fR\fIi\fR\fB)\fR
+Computes the square root of \fIi\fR.
+.TP
+\&\fBpower(\fR\fIi, j\fR\fB)\fR
+Computes i power j.
+.
+.
+.
+.SH EXAMPLE
+.PP
+.EX
+\fB.\fR\fBsqlfile\fR :memory:
+\fB.\fR\fBTS\fR
+allbox;
+c c .
+\fB.\fR\fBsqltbl\fR
+create table T (id integer primary key, name text);
+insert into T (name) values ('Pierre'), ('Paul'), ('Jacques');
+select * from T;
+\fB.\fR\fBsqlend\fR
+\fB.\fR\fBTE\fR
+.EE
+.
+.
+.
+.SH FILES
+.PP
+\fI@BINDIR@/tsql\fR
+.
+.
+.
+.SH LICENSE
+.PP
+\fITsql\fR and this man page are distributed under the
+isc license.
+.
+.
+.
+.SH AUTHOR
+.PP
+Pierre-Jean Fichet.

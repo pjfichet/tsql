@@ -1,0 +1,49 @@
+tsql - Executes sqlite statements from a troff document.
+
+Presentation
+------------
+
+Tsql is a troff pre-processor which executes the SQLite statements
+found in a troff file and format their results.
+The file can then be processed by tbl (optionnaly) and troff.
+
+Example
+-------
+
+	echo ".sqlbeg
+	create table T (id integer primary key, value text);
+	insert into T (value) values ('alpha'), ('beta'), ('gamma');
+	select * from T;
+	.sqlend" | tsql
+
+will return:
+
+	.tblrow
+	.	tblcol 1
+	.	bnlcol alpha
+	.tblrow
+	.	tblcol 2
+	.	tblcol beta
+	.tblrow
+	.	tblcol 3
+	.	tblcol gamma
+
+Build
+-----
+
+To build and install tsql and its manual page, run :
+
+    make
+    make install
+
+To uninstall and clean, run :
+
+    make uninstall
+    make clean
+
+
+License
+-------
+
+Tsql and its man page are distributed under the ISC license.
+
