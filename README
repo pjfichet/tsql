@@ -10,7 +10,8 @@ The file can then be processed by tbl (optionnaly) and troff.
 Example
 -------
 
-	echo ".sqlbeg
+	echo ".sqlfile :memory:
+	.sqlbeg
 	create table T (id integer primary key, value text);
 	insert into T (value) values ('alpha'), ('beta'), ('gamma');
 	select * from T;
