@@ -157,7 +157,7 @@ static int sql_mac(char *pat, char *line)
 }
 
 /* Get the argument of a known macro */
-static int sql_arg(char *line, char *arg, int len, int log)
+static int sql_arg(char *line, char *arg, int len)
 {
 	int i = 0;
 	if (*line++ != cc)
@@ -168,12 +168,6 @@ static int sql_arg(char *line, char *arg, int len, int log)
 		line++;
 	while (*line && (*line == ' ' || *line == '\t'))
 		line++;
-	if (*line == '\n') {
-		if (log) {
-			fprintf(stderr, "Tsql error line %d. Missing argument.\n", ln);
-		};
-		return 1;
-	}
 	for (i=0; i < len && *line && *line != '\n' && *line != ' ' && *line != '\t'; i++)
 		arg[i] = *line++;
 	arg[i] = '\0';
@@ -217,7 +211,6 @@ static int sql_query(int (*callback)())
 	return 0;
 }
 
-
 /* Parse the input file and replace queries with their result */
 static int sql(void)
 {
@@ -227,8 +220,10 @@ static int sql(void)
 	while ((line = lnget())) {
 		/* .sqlfile <filename> */
 		if (sql_mac(sqlfile, line)) {
-			if (sql_arg(line, arg, len, 1))
+			if (sql_arg(line, arg, len) || arg[0] == '\n') {
+				fprintf(stderr, "Tsql error line %d. Missing argument.\n", ln);
 				return 1;
+			}
 			if (sqlopenned)
 				sql_close();
 			sqlopenned = 1;
@@ -238,8 +233,10 @@ static int sql(void)
 		}	
 		/* .sqlds <string> <query> .sqlend */
 		if (sql_mac(sqlds, line)) {
-			if (sql_arg(line, arg, len, 1))
+			if (sql_arg(line, arg, len) || arg[0] == '\n') {
+				fprintf(stderr, "Tsql error line %d. Missing argument.\n", ln);
 				return 1;
+			}
 			printf("%cds %s", cc, arg);
 			if (sql_query(sql_str))
 				return 1;
@@ -247,8 +244,10 @@ static int sql(void)
 		}
 		/* .sqlnr <register> <query> .sqlend */
 		if (sql_mac(sqlnr, line)) {
-			if (sql_arg(line, arg, len, 1))
+			if (sql_arg(line, arg, len) || arg[0] == '\n') {
+				fprintf(stderr, "Tsql error line %d. Missing argument.\n", ln);
 				return 1;
+			}
 			printf("%cnr %s", cc, arg);
 			if (sql_query(sql_str))
 				return 1;
@@ -256,7 +255,7 @@ static int sql(void)
 		}
 		/* .sqltbl <query> .sqlend */
 		if (sql_mac(sqltbl, line)) {
-			if (!sql_arg(line, arg, len, 0))
+			if (!sql_arg(line, arg, len) && arg[0] != '\0')
 				sqltab = arg[0];
 			if (sql_query(sql_tbl))
 				return 1;
