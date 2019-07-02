@@ -17,9 +17,9 @@ tsql
 sqlite preprocessor for troff
 .sp 2v
 .PP
-The database is defined by .sqlfile.
+The database is defined by .sqldb.
 We can use an in memory database using the keyword :memory:.
-.sqlfile :memory:
+.sqldb :memory:
 Queries are enclosed between .sqlbeg and .sqlend.
 We begin by creating a table and add values to it.
 .sqlbeg

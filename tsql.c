@@ -25,7 +25,7 @@
 
 static int ln = 0;					/* line number */
 static char cc = '.';				/* The control character */
-static char * sqlfile = "sqlfile";	/* gets the database file */
+static char * sqldb = "sqldb";		/* gets the database name */
 static char * sqlds = "sqlds";		/* begins a .ds formatted query */
 static char * sqlnr = "sqlnr";		/* begins a .nr formatted query */
 static char * sqltbl = "sqltbl";	/* begins a tbl formatted query */
@@ -218,8 +218,8 @@ static int sql(void)
 	int len = 256;
 	char arg[len];
 	while ((line = lnget())) {
-		/* .sqlfile <filename> */
-		if (sql_mac(sqlfile, line)) {
+		/* .sqldb <database> */
+		if (sql_mac(sqldb, line)) {
 			if (sql_arg(line, arg, len) || arg[0] == '\n') {
 				fprintf(stderr, "Tsql error line %d. Missing argument.\n", ln);
 				return 1;

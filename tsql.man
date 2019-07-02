@@ -22,7 +22,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 .
 .
 .
-.TH TSQL 1 2019-07-01
+.TH TSQL 1 2019-07-02
 .
 .
 .
@@ -59,10 +59,10 @@ Define the control character. Default is '\fI.\fR'.
 In the troff document, macros are used to configure \fBtsql\fR and
 wrap the sqlite statements.
 .TP
-\&\fBsqlfile\fR <\fIfile\fR>
-Opens the database \fIfile\fR and executes statements against it.
-If \fIfile\fR does not exist, it will be created.
-Several \fBsqlfile\fR can be indicated: \fBtsql\fR will then close the
+\&\fBsqldb\fR <\fIdatabase\fR>
+Opens the database \fIdatabase\fR and executes statements on it.
+If \fIdatabase\fR does not exist, it will be created.
+Several \fBsqldb\fR can be indicated: \fBtsql\fR will then close the
 current database and open the new one instead. The keyword
 \fI:memory:\fR can be used to define an in memory database.
 .TP
@@ -90,7 +90,7 @@ An sqlite query begins on the next line, until \fBsqlend\fR.
 \&\fBsqlnr\fR <\fIregister_name\fR>
 An sqlite query begins on the next line, until \fBsqlend\fR.
 \fBsqlnr\fR will format the result as a troff number register
-definition.
+definition:
 .PP
 .EX
 \fB.\fR\fBnr\fR \fBregister_name\fR \fIquery_result\fR
@@ -106,14 +106,14 @@ The following functions are added to the sqlite language:
 Computes the square root of \fIi\fR.
 .TP
 \&\fBpower(\fR\fIi, j\fR\fB)\fR
-Computes i power j.
+Computes \fIi\fR power \fIj\fR.
 .
 .
 .
 .SH EXAMPLE
 .PP
 .EX
-\fB.\fR\fBsqlfile\fR :memory:
+\fB.\fR\fBsqldb\fR :memory:
 \fB.\fR\fBTS\fR
 allbox;
 c c .
