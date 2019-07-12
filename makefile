@@ -1,11 +1,11 @@
 # Packaging directory
 DESTDIR=
 # Prefix directory
-PREFIX=$(HOME)/dev
+PREFIX=$(HOME)/.local
 # Where to place binaries
 BINDIR=$(PREFIX)/bin
 # Where to place libraries
-MANDIR=$(PREFIX)/man
+MANDIR=$(PREFIX)/share/man
 
 # C compiler
 CC=cc
