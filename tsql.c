@@ -32,7 +32,9 @@ static char * sqltbl = "sqltbl";	/* begins a tbl formatted query */
 static char   sqltab = '\t';		/* default tbl separator */
 static char * sqlbeg = "sqlbeg";	/* begins a table formatted query */
 static char * sqlend = "sqlend";	/* ends a query */
+static char * sqlso = "sqlso";	/* gets a statements filename */
 static int sqlopenned = 0;			/* wether the database is openned or not */
+static FILE *sqlfile;				/* the file sourced by sqlso */
 sqlite3 *db;						/* the database pointer */
 
 /* Add sqrt function to sqlite */
@@ -211,6 +213,46 @@ static int sql_query(int (*callback)())
 	return 0;
 }
 
+static int sql_file(char * filename)
+{
+
+
+	static char buf[1024];
+	char *line;
+	int bufsize = 1024;
+	int querysize= 0;
+	char *query = (char *)malloc(bufsize);
+	if (query == NULL) {
+		fprintf(stderr, "Tsql error line %d. Can not allocate memory.\n", ln);
+		return 1;
+	}
+
+	sqlfile = fopen(filename, "r");
+	if (!sqlfile)
+		return 1;
+	
+	while ((line = fgets(buf, sizeof(buf), sqlfile))) {
+		int len = strlen(line);
+		while (bufsize < querysize + len + 1) {
+			bufsize += 1024;
+			query = (char*)realloc(query, bufsize);
+		}
+		memcpy(query + querysize, line, len);
+		querysize += len;
+	}
+	query[querysize] = '\0';
+	if (!sqlopenned) {
+		fprintf(stderr, "Tsql error line %d. No sqlite3 file specified.\n", ln);
+		return 1;
+	}
+	if (sql_exec(query, sql_beg))
+		return 1;
+	free(query);
+	fclose(sqlfile);
+	return 0;
+}
+
+
 /* Parse the input file and replace queries with their result */
 static int sql(void)
 {
@@ -267,7 +309,17 @@ static int sql(void)
 				return 1;
 			continue;
 		}
-		printf(line);
+		/* .sqlfile <file> */
+		if (sql_mac(sqlso, line)) {
+			if (sql_arg(line, arg, len) || arg[0] == '\n') {
+				fprintf(stderr, "Tsql error line %d. Missing filename.\n", ln);
+				return 1;
+			}
+			if (sql_file(arg))
+				return 1;
+			continue;
+		}
+		printf("%s", line);
 		continue;
 	}
 	sql_close();
